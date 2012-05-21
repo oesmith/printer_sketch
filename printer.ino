@@ -114,6 +114,7 @@ void checkForDownload() {
     client.print("GET "); client.print("/printer/"); client.print(printerId); client.println(" HTTP/1.0");
     client.print("Host: "); client.print(host); client.print(":"); client.println(port);
     client.println("Accept: application/vnd.freerange.printer.A2_raw");
+    client.println("Connection: close");
     client.println();
     boolean parsingHeader = true;
 #ifdef DEBUG
@@ -137,6 +138,8 @@ void checkForDownload() {
         }
       }
       //debug("No more data to read at the moment...");
+      if(millis() - start > 30000)
+        break;
     }
 
     debug("Server has disconnected");
@@ -161,7 +164,7 @@ void checkForDownload() {
     unsigned long duration = millis() - start;
     debug2("Total bytes: ", length);
     debug2("Duration: ", duration);
-    debug2("Speed: ", length/(duration/1000.0)); // NB - floating point math increases sketch size by ~2k
+    // debug2("Speed: ", length/(duration/1000.0)); // NB - floating point math increases sketch size by ~2k
 #endif
 
     if (success) {
